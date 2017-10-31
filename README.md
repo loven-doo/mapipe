@@ -50,7 +50,7 @@ Also you can use import in python:
 
 from mumapipe import run_mapipe
 
-run_mapipe(srr_list, srr_downloads_dir, {'genome_fasta': genome_fasta, 'genome_indices': genome_indices},
+run_mapipe(srr_list, srr_downloads_dir, {'genome_fasta': genome_fasta, 'genome_indices': genome_indices},  
            gff, config_path, threads)
 
 3. If you want conduct only one step
