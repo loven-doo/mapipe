@@ -29,7 +29,10 @@ def run_mapipe(srr_list, srr_downloads_dir, genome_or_ind, gff, config_path=DEFA
             'config_path': config_path
         }
         args_list.append(args_dict)
-    pool = mp.Pool(int(threads)/task_thr)
+    n_workers = int(threads)/task_thr
+    if n_workers < 1:
+        n_workers = 1
+    pool = mp.Pool(n_workers)
     result = pool.map(_worker, args_list)
     pool.close()
     pool.join()
