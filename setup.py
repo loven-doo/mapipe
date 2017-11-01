@@ -1,15 +1,15 @@
 from setuptools import setup
 
-setup(name='mapipe_no_git',
+setup(name='mapipe',
     version='0.1.0',
-    packages=['mapipe_no_git'],
+    packages=['mapipe'],
     entry_points={
         'console_scripts': [
-            'mapipe_no_git = mapipe_no_git.mapipe_lib:main'
+            'mapipe = mapipe.mapipe_lib:main'
         ]
     },
     package_data={
-        'mapipe_no_git': [
+        'mapipe': [
             'configs/*'
         ]
     }
