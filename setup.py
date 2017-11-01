@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(name='mapipe',
     version='0.1.0',
-    packages=['mapipe'],
+    packages=['mapipe', 'mapipe.tools'],
     entry_points={
         'console_scripts': [
             'mapipe = mapipe.mapipe_lib:main'
@@ -10,7 +10,7 @@ setup(name='mapipe',
     },
     package_data={
         'mapipe': [
-            'configs/*'
+            'configs/*',
         ]
     }
     )
