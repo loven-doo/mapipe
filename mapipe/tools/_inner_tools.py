@@ -1,5 +1,5 @@
 import argparse
-import configparser
+import ConfigParser
 
 from mapipe.constants import DEFAULT_CONFIG
 
@@ -110,7 +110,7 @@ def _config_parser(config_path=DEFAULT_CONFIG):
       :param config_path: path to config file
       :return: a ConfigParser object
       """
-    config = configparser.ConfigParser()
+    config = ConfigParser.ConfigParser()
     with open(config_path) as config_file:
         config_string = config_file.read()
 
