@@ -40,5 +40,5 @@ def _worker(kwargs):
 
 
 def main():
-    args = _parse_cmd_args(sys.argv[-1:])
+    args = _parse_cmd_args(sys.argv[-1:], 1)
     run_mapipe(*args)
