@@ -17,7 +17,7 @@ def run_mapipe(srr_list, srr_downloads_dir, genome_or_ind, gff, config_path=DEFA
         except KeyError:
             print "No genome or genome indices file were in input"
             raise KeyError
-    task_thr = max(int(config['Trimmomatic']['threads']), int(config['STAR']['threads']))
+    task_thr = max(int(config.get('Trimmomatic', 'threads')), int(config.get('STAR', 'threads')))
     args_list = []
     srr_list_read = open(srr_list)
     for srr in srr_list_read:
