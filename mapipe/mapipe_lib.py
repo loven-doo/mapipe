@@ -22,8 +22,10 @@ def get_counts(srr, srr_downloads_dir, genome_or_ind, gff, config_path=DEFAULT_C
 def download_reads(srr, downloads_dir, conf_path=DEFAULT_CONFIG, conf=None):
     if not conf:
         conf = _config_parser(conf_path)
-    cmd = conf.get('fastq-dump', 'exec_path') + " -I --split-files " + srr + " -O " + downloads_dir + "/"
+    cmd = conf.get('fastq-dump', 'exec_path') + " -I --split-files " + srr + " -O " + \
+          os.path.join(downloads_dir, srr) + "/"
     subprocess.call("mkdir " + downloads_dir, shell=True)
+    subprocess.call("mkdir " + os.path.join(downloads_dir, srr), shell=True)
     subprocess.call(cmd.replace("//", "/"), shell=True)
     subprocess.call("rm -r " + os.path.join(conf.get('fastq-dump', 'cash_dir'), '*'), shell=True)
 
