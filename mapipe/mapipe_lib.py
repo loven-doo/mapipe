@@ -24,7 +24,7 @@ def download_reads(srr, downloads_dir, conf_path=DEFAULT_CONFIG, conf=None):
         conf = _config_parser(conf_path)
     cmd = conf.get('fastq-dump', 'exec_path') + " -I --split-files " + srr + " -O " + downloads_dir + "/"
     subprocess.call("mkdir " + downloads_dir, shell=True)
-    subprocess.call(cmd.replace("//", "/", shell=True)
+    subprocess.call(cmd.replace("//", "/"), shell=True)
     subprocess.call("rm -r " + os.path.join(conf.get('fastq-dump', 'cash_dir'), '*'), shell=True)
 
 
