@@ -9,10 +9,10 @@ from mapipe.constants import DEFAULT_CONFIG
 def get_counts(srr, srr_downloads_dir, genome_or_ind, gff, config_path=DEFAULT_CONFIG, *args):
     config = _config_parser(config_path)
     download_reads(srr=srr, downloads_dir=srr_downloads_dir, conf_path=config_path, conf=config)
-    print srr + " reads downloaded succsessfuly"
-    filter_reads(conf_path=config_path, conf=config)
-    print srr + " reads filtered succesfully"
     reads_directory = os.path.join(srr_downloads_dir, srr)
+    print srr + " reads downloaded succsessfuly"
+    filter_reads(reads_dir=reads_directory, conf_path=config_path, conf=config)
+    print srr + " reads filtered succesfully"
     map_reads(g_or_ind=genome_or_ind, reads_dir=reads_directory, conf_path=config_path, conf=config)
     print srr + " reads mapped successfully"
     calculate_counts(gff=gff, reads_dir=reads_directory, conf_path=config_path, conf=config)
@@ -28,10 +28,10 @@ def download_reads(srr, downloads_dir, conf_path=DEFAULT_CONFIG, conf=None):
     subprocess.call("rm -r " + os.path.join(conf['fastq-dump']['cash_dir'], '*'), shell=True)
 
 
-def filter_reads(srr, downloads_dir, conf_path=DEFAULT_CONFIG, conf=None):
+def filter_reads(reads_dir, conf_path=DEFAULT_CONFIG, conf=None):
     if not conf:
         conf = _config_parser(conf_path)
-    srr_list = _get_srr_list(os.path.join(downloads_dir, srr))
+    srr_list = _get_srr_list(reads_dir)
     if len(srr_list) == 1:
         cmd = "java -jar " + conf['Trimmomatic']['exec_path'] + " SE -threads " + \
             conf['Trimmomatic']['threads'] + " -phred33 " + srr_list[0] + " " + \

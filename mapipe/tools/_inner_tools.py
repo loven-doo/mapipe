@@ -111,8 +111,5 @@ def _config_parser(config_path=DEFAULT_CONFIG):
       :return: a ConfigParser object
       """
     config = ConfigParser.ConfigParser()
-    with open(config_path) as config_file:
-        config_string = config_file.read()
-
-    config.read_string(config_string)
+    config.read(config_path)
     return config

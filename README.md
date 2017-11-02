@@ -63,9 +63,9 @@ import mapipe
 
 mapipe.download_reads(srr, srr_downloads_dir, config_path) #downloads reads from SRA database using fastq-dump  
 
-mapipe.filter_reads(srr, srr_downloads_dir, config_path) #filters reads using Trimmomatic  
-
 reads_dir = os.path.join(srr_downloads_dir, srr) #joins the path to fastq files  
+mapipe.filter_reads(reads_dir, config_path) #filters reads using Trimmomatic  
+
 mapipe.map_reads(reads_dir, {'genome_fasta': genome_fasta, 'genome_indices': genome_indices}, config_path)  
 #runs STAR (it can automatically index input genome)  
 
