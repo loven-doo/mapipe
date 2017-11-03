@@ -69,7 +69,7 @@ mapipe.filter_reads(reads_dir, config_path) #filters reads using Trimmomatic
 mapipe.map_reads(reads_dir, {'genome_fasta': genome_fasta, 'genome_indices': genome_indices}, config_path)  
 #runs STAR (it can automatically index input genome)  
 
-mapipe.index_genome(genome_fasta, config_path) #Indexes input fasta file with chromosomes  
+mapipe.index_genome(genome_fasta, config_path, genome_indices) #Indexes input fasta file with chromosomes  
 
 mapipe.calculate_counts(gff, reads_dir, config_path) #Calculates read counts using HTSeq  
 ```

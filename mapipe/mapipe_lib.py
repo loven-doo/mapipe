@@ -8,31 +8,31 @@ from mapipe.constants import DEFAULT_CONFIG
 
 def get_counts(srr, srr_downloads_dir, genome_or_ind, gff, config_path=DEFAULT_CONFIG, *args):
     config = _config_parser(config_path)
-    download_reads(srr=srr, downloads_dir=srr_downloads_dir, conf_path=config_path, conf=config)
+    download_reads(srr=srr, srr_downloads_dir=srr_downloads_dir, config_path=config_path, conf=config)
     reads_directory = os.path.join(srr_downloads_dir, srr)
     print srr + " reads downloaded succsessfuly"
-    filter_reads(reads_dir=reads_directory, conf_path=config_path, conf=config)
+    filter_reads(reads_dir=reads_directory, config_path=config_path, conf=config)
     print srr + " reads filtered succesfully"
-    map_reads(g_or_ind=genome_or_ind, reads_dir=reads_directory, conf_path=config_path, conf=config)
+    map_reads(reads_dir=reads_directory, genome_or_ind=genome_or_ind, config_path=config_path, conf=config)
     print srr + " reads mapped successfully"
-    calculate_counts(gff=gff, reads_dir=reads_directory, conf_path=config_path, conf=config)
+    calculate_counts(gff=gff, reads_dir=reads_directory, config_path=config_path, conf=config)
     print "counts for " + srr + " reads got successfully"
 
 
-def download_reads(srr, downloads_dir, conf_path=DEFAULT_CONFIG, conf=None):
+def download_reads(srr, srr_downloads_dir, config_path=DEFAULT_CONFIG, conf=None):
     if not conf:
-        conf = _config_parser(conf_path)
+        conf = _config_parser(config_path)
     cmd = conf.get('fastq-dump', 'exec_path') + " -I --split-files " + srr + " -O " + \
-          os.path.join(downloads_dir, srr) + "/"
-    subprocess.call("mkdir " + downloads_dir, shell=True)
-    subprocess.call("mkdir " + os.path.join(downloads_dir, srr), shell=True)
+          os.path.join(srr_downloads_dir, srr) + "/"
+    subprocess.call("mkdir " + srr_downloads_dir, shell=True)
+    subprocess.call("mkdir " + os.path.join(srr_downloads_dir, srr), shell=True)
     subprocess.call(cmd.replace("//", "/"), shell=True)
     subprocess.call("rm -r " + os.path.join(conf.get('fastq-dump', 'cash_dir'), '*'), shell=True)
 
 
-def filter_reads(reads_dir, conf_path=DEFAULT_CONFIG, conf=None):
+def filter_reads(reads_dir, config_path=DEFAULT_CONFIG, conf=None):
     if not conf:
-        conf = _config_parser(conf_path)
+        conf = _config_parser(config_path)
     srr_list = _get_srr_list(reads_dir)
     if len(srr_list) == 1:
         cmd = "java -jar " + conf.get('Trimmomatic', 'exec_path') + " SE -threads " + \
@@ -72,38 +72,38 @@ def _get_trimm_names(srr_l):
     return srr_l_trimm
 
 
-def map_reads(reads_dir, g_or_ind, conf_path=DEFAULT_CONFIG, conf=None):
+def map_reads(reads_dir, genome_or_ind, config_path=DEFAULT_CONFIG, conf=None):
     if not conf:
-        conf = _config_parser(conf_path)
+        conf = _config_parser(config_path)
     try:
-        g_ind = g_or_ind['genome_indices']
+        g_ind = genome_or_ind['genome_indices']
     except KeyError:
         try:
-            g_ind = index_genome(genome=g_or_ind['genome_fasta'], conf_path=conf_path, conf=conf)
+            g_ind = index_genome(genome=genome_or_ind['genome_fasta'], config_path=config_path,
+                                 genome_indices="Genome_indices", conf=conf)
         except KeyError:
             print "No genome or genome indices file were in input"
             raise KeyError
     reads_f_list = _get_srr_list(reads_dir)
     cmd = conf.get('STAR', 'exec_path') + " --runThreadN " + conf.get('STAR', 'threads') + " --genomeDir " + \
         g_ind + " --readFilesIn " + ",".join(reads_f_list) + " --outSAMtype " + \
-        conf.get('STAR', 'outSAMtype')
+        conf.get('STAR', 'outSAMtype') + " --outFileNamePrefix " + reads_dir
     subprocess.call(cmd, shell=True)
 
 
-def index_genome(genome, conf_path=DEFAULT_CONFIG, conf=None):
+def index_genome(genome_fasta, config_path=DEFAULT_CONFIG, genome_indices="Genome_indices", conf=None):
     if not conf:
-        conf = _config_parser(conf_path)
-    g_ind = "Genome_indices"
-    subprocess.call("mkdir " + g_ind, shell=True)
+        conf = _config_parser(config_path)
+    subprocess.call("mkdir " + genome_indices, shell=True)
     ind_cmd = conf.get('STAR', 'exec_path') + " --runThreadN " + conf.get('STAR', 'threads') + \
-              " --runMode genomeGenerate --genomeDir " + g_ind + " --genomeFastaFiles " + genome
+              " --runMode genomeGenerate --genomeDir " + genome_indices + " --genomeFastaFiles " + genome_fasta
     subprocess.call(ind_cmd, shell=True)
-    return g_ind
+    return genome_indices
 
 
-def calculate_counts(gff, reads_dir, conf_path=DEFAULT_CONFIG, conf=None):
+def calculate_counts(gff, reads_dir, config_path=DEFAULT_CONFIG, conf=None):
     if not conf:
-        conf = _config_parser(conf_path)
+        conf = _config_parser(config_path)
     srr_list = _get_srr_list(reads_dir)
     for srr in srr_list:
         if srr[-4:] == '.bam':
