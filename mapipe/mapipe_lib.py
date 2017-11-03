@@ -86,8 +86,8 @@ def map_reads(reads_dir, genome_or_ind, config_path=DEFAULT_CONFIG, conf=None):
             raise KeyError
     reads_f_list = _get_srr_list(reads_dir)
     cmd = conf.get('STAR', 'exec_path') + " --runThreadN " + conf.get('STAR', 'threads') + " --genomeDir " + \
-        g_ind + " --readFilesIn " + ",".join(reads_f_list) + " --outSAMtype " + \
-        conf.get('STAR', 'outSAMtype') + " --outFileNamePrefix " + reads_dir
+        g_ind + " --readFilesIn " + ",".join(reads_f_list) + " --outFileNamePrefix " + reads_dir + \
+        " --outSAMtype " + conf.get('STAR', 'outSAMtype')
     subprocess.call(cmd, shell=True)
 
 
