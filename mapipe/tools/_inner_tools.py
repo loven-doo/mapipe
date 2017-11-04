@@ -1,5 +1,6 @@
 import argparse
 import ConfigParser
+import os
 
 from mapipe.constants import DEFAULT_CONFIG
 
@@ -125,3 +126,14 @@ def _prepare_paths(cmd):
         else:
             prepared_cmd_list.append(cmd_part)
     return " ".join(prepared_cmd_list)
+
+
+def _get_files_list(files_d):
+    files_l = []
+    f_list = os.listdir(files_d)
+    for f in f_list:
+        f_path = None
+        f_path = os.path.join(files_d, f)
+        if os.path.isfile(f_path):
+            files_l.append(f_path)
+    return files_l

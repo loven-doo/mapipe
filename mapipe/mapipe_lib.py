@@ -2,8 +2,8 @@ import os
 import subprocess
 import sys
 
-from mapipe.tools._inner_tools import _parse_cmd_args, _config_parser, _prepare_paths
 from mapipe.constants import DEFAULT_CONFIG
+from mapipe.tools._inner_tools import _parse_cmd_args, _config_parser, _prepare_paths, _get_files_list
 
 
 def get_counts(srr, srr_downloads_dir, genome_or_ind, gff, config_path=DEFAULT_CONFIG, *args):
@@ -33,7 +33,7 @@ def download_reads(srr, srr_downloads_dir, config_path=DEFAULT_CONFIG, conf=None
 def filter_reads(reads_dir, config_path=DEFAULT_CONFIG, conf=None):
     if not conf:
         conf = _config_parser(config_path)
-    srr_list = _get_srr_list(reads_dir)
+    srr_list = _get_files_list(reads_dir)
     if len(srr_list) == 1:
         cmd = "java -jar " + conf.get('Trimmomatic', 'exec_path') + " SE -threads " + \
             conf.get('Trimmomatic', 'threads') + " -phred33 " + srr_list[0] + " " + \
@@ -50,18 +50,6 @@ def filter_reads(reads_dir, config_path=DEFAULT_CONFIG, conf=None):
     subprocess.call(_prepare_paths(cmd), shell=True)
     for srr in srr_list:
         subprocess.call("rm " + srr, shell=True)
-
-
-def _get_srr_list(srr_d):
-    srr_l = []
-    f_list = os.listdir(srr_d)
-    for f in f_list:
-        f_path = None
-        f_path = os.path.join(srr_d, f)
-        if os.path.isfile(f_path):
-            srr_l.append(f_path)
-    return srr_l
-
 
 def _get_trimm_names(srr_l):
     srr_l_trimm = []
@@ -84,7 +72,7 @@ def map_reads(reads_dir, genome_or_ind, config_path=DEFAULT_CONFIG, conf=None):
         except KeyError:
             print "No genome or genome indices file were in input"
             raise KeyError
-    reads_f_list = _get_srr_list(reads_dir)
+    reads_f_list = _get_files_list(reads_dir)
     cmd = conf.get('STAR', 'exec_path') + " --runThreadN " + conf.get('STAR', 'threads') + " --genomeDir " + \
         g_ind + " --readFilesIn " + ",".join(reads_f_list) + " --outFileNamePrefix " + os.path.join(reads_dir, "") + \
         " --outSAMtype " + conf.get('STAR', 'outSAMtype')
@@ -104,7 +92,7 @@ def index_genome(genome_fasta, config_path=DEFAULT_CONFIG, genome_indices="Genom
 def calculate_counts(gff, reads_dir, config_path=DEFAULT_CONFIG, conf=None):
     if not conf:
         conf = _config_parser(config_path)
-    srr_list = _get_srr_list(reads_dir)
+    srr_list = _get_files_list(reads_dir)
     for srr in srr_list:
         if srr[-4:] == '.bam':
             cmd = "python -m HTSeq.scripts.counts -f " + conf.get('HTSeq', 'format') + " -r " + conf.get('HTSeq', 'order') + \
