@@ -67,8 +67,7 @@ reads_dir = os.path.join(srr_downloads_dir, srr) #joins the path to fastq files
 mapipe.filter_reads(reads_dir, config_path) #filters reads using Trimmomatic  
 
 genome_or_ind = {'genome_fasta': genome_fasta, 'genome_indices': genome_indices}
-mapipe.map_reads(reads_dir, genome_or_ind, config_path)  
-#runs STAR (it can automatically index input genome)  
+mapipe.map_reads(reads_dir, genome_or_ind, config_path)#runs STAR (it can automatically index input genome)  
 
 mapipe.index_genome(genome_fasta, config_path, genome_indices) #Indexes input fasta file with chromosomes  
 
