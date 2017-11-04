@@ -36,8 +36,8 @@ Also you can use import in python:
 ```
 from mapipe import get_counts
 
-get_counts(srr, srr_downloads_dir, {'genome_fasta': genome_fasta, 'genome_indices': genome_indices},  
-           gff, config_path)
+genome_or_ind = {'genome_fasta': genome_fasta, 'genome_indices': genome_indices}
+get_counts(srr, srr_downloads_dir, genome_or_ind, gff, config_path)
 ```
 2. If you want prepare a list of SRRs  
 Excute 'mumapipe' or 'python -m mumapipe' with folowing options:  
@@ -53,8 +53,8 @@ Also you can use import in python:
 ```
 from mumapipe import run_mapipe
 
-run_mapipe(srr_list, srr_downloads_dir, {'genome_fasta': genome_fasta, 'genome_indices': genome_indices},  
-           gff, config_path, threads)
+genome_or_ind = {'genome_fasta': genome_fasta, 'genome_indices': genome_indices}
+run_mapipe(srr_list, srr_downloads_dir, genome_or_ind, gff, config_path, threads)
 ```
 3. If you want conduct only one step
 Use import in python:  
@@ -66,7 +66,8 @@ mapipe.download_reads(srr, srr_downloads_dir, config_path) #downloads reads from
 reads_dir = os.path.join(srr_downloads_dir, srr) #joins the path to fastq files  
 mapipe.filter_reads(reads_dir, config_path) #filters reads using Trimmomatic  
 
-mapipe.map_reads(reads_dir, {'genome_fasta': genome_fasta, 'genome_indices': genome_indices}, config_path)  
+genome_or_ind = {'genome_fasta': genome_fasta, 'genome_indices': genome_indices}
+mapipe.map_reads(reads_dir, genome_or_ind, config_path)  
 #runs STAR (it can automatically index input genome)  
 
 mapipe.index_genome(genome_fasta, config_path, genome_indices) #Indexes input fasta file with chromosomes  
