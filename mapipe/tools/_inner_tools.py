@@ -113,3 +113,15 @@ def _config_parser(config_path=DEFAULT_CONFIG):
     config = ConfigParser.ConfigParser()
     config.read(config_path)
     return config
+
+
+def _prepare_paths(cmd):
+    prepared_cmd_list = []
+    parent_prefix = os.path.expanduser("~")
+    cmd_list = cmd.split()
+    for cmd_part in cmd_list:
+        if cmd_part[0] == "~":
+            prepared_cmd_list.append(parent_prefix + cmd_part[1:])
+        else:
+            prepared_cmd_list.append(cmd_part)
+    return " ".join(prepared_cmd_list)

@@ -2,7 +2,7 @@ import os
 import subprocess
 import sys
 
-from mapipe.tools._inner_tools import _parse_cmd_args, _config_parser
+from mapipe.tools._inner_tools import _parse_cmd_args, _config_parser, _prepare_paths
 from mapipe.constants import DEFAULT_CONFIG
 
 
@@ -26,7 +26,7 @@ def download_reads(srr, srr_downloads_dir, config_path=DEFAULT_CONFIG, conf=None
           os.path.join(srr_downloads_dir, srr) + "/"
     subprocess.call("mkdir " + srr_downloads_dir, shell=True)
     subprocess.call("mkdir " + os.path.join(srr_downloads_dir, srr), shell=True)
-    subprocess.call(cmd.replace("//", "/"), shell=True)
+    subprocess.call(_prepare_paths(cmd.replace("//", "/")), shell=True)
     subprocess.call("rm -r " + os.path.join(conf.get('fastq-dump', 'cash_dir'), '*'), shell=True)
 
 
@@ -47,7 +47,7 @@ def filter_reads(reads_dir, config_path=DEFAULT_CONFIG, conf=None):
             " ILLUMINACLIP:" + conf.get('Trimmomatic', 'ILLUMINACLIP') + " LEADING:" + \
             conf.get('Trimmomatic', 'LEADING') + " TRAILING:" + conf.get('Trimmomatic', 'TRAILING') + \
             " MINLEN:" + conf.get('Trimmomatic', 'MINLEN')
-    subprocess.call(cmd, shell=True)
+    subprocess.call(_prepare_paths(cmd), shell=True)
     for srr in srr_list:
         subprocess.call("rm " + srr, shell=True)
 
@@ -86,9 +86,9 @@ def map_reads(reads_dir, genome_or_ind, config_path=DEFAULT_CONFIG, conf=None):
             raise KeyError
     reads_f_list = _get_srr_list(reads_dir)
     cmd = conf.get('STAR', 'exec_path') + " --runThreadN " + conf.get('STAR', 'threads') + " --genomeDir " + \
-        g_ind + " --readFilesIn " + ",".join(reads_f_list) + " --outFileNamePrefix " + reads_dir + \
+        g_ind + " --readFilesIn " + ",".join(reads_f_list) + " --outFileNamePrefix " + os.path.join(reads_dir, "") + \
         " --outSAMtype " + conf.get('STAR', 'outSAMtype')
-    subprocess.call(cmd, shell=True)
+    subprocess.call(_prepare_paths(cmd), shell=True)
 
 
 def index_genome(genome_fasta, config_path=DEFAULT_CONFIG, genome_indices="Genome_indices", conf=None):
@@ -97,7 +97,7 @@ def index_genome(genome_fasta, config_path=DEFAULT_CONFIG, genome_indices="Genom
     subprocess.call("mkdir " + genome_indices, shell=True)
     ind_cmd = conf.get('STAR', 'exec_path') + " --runThreadN " + conf.get('STAR', 'threads') + \
               " --runMode genomeGenerate --genomeDir " + genome_indices + " --genomeFastaFiles " + genome_fasta
-    subprocess.call(ind_cmd, shell=True)
+    subprocess.call(_prepare_paths(ind_cmd), shell=True)
     return genome_indices
 
 
@@ -109,7 +109,7 @@ def calculate_counts(gff, reads_dir, config_path=DEFAULT_CONFIG, conf=None):
         if srr[-4:] == '.bam':
             cmd = "python -m HTSeq.scripts.counts -f " + conf.get('HTSeq', 'format') + " -r " + conf.get('HTSeq', 'order') + \
                   " -s " + conf.get('HTSeq', 'stranded') + srr + " " + gff + " 1 > " + srr[-4:] + ".ct 2 >> htseq.log"
-            subprocess.call(cmd, shell=True)
+            subprocess.call(_prepare_paths(cmd), shell=True)
 
 
 def main():
