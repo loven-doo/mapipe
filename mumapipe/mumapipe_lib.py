@@ -35,8 +35,8 @@ def run_mapipe(srr_list, srr_downloads_dir, genome_fasta_or_indices, gff, config
         n_workers = 1
     pool = mp.Pool(n_workers)
     result = pool.map(_worker, args_list)
-    pool.close()
     pool.join()
+    pool.close()
 
 def _read_srr_list_file(f):
     srr_list_r = []
