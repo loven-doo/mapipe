@@ -20,7 +20,7 @@ def _parse_cmd_args(args, multi=None):
         '--srr_downloads_dir',
         default='srr_downloads',
         help="The name of directory where reads should be downloaded",
-        required=False,
+        required=True,
         action='store'
     )
     parser.add_argument(

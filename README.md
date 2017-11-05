@@ -43,7 +43,7 @@ get_counts(srr, srr_downloads_dir, genome_fasta_or_indices, gff, config_path)
 2. If you want prepare a list of SRRs  
 Excute 'mumapipe' or 'python -m mumapipe' with folowing options:  
 -l [--srr_list] <Text/file/with/srr/list>
--d [--srr_downloads_dir] <Name/of/directory/where/reads/should/be/downloaded>  
+-d [--srr_downloads_dir] <Name/of/directory/where/reads/should/be/downloaded>
 -g [--genome_fasta] <Fasta/file/with/chromosomes> (only if indices are not exists)  
 -i [--genome_indices] <File/with/genome/indices>  
 -a [--gff] <gff/file/with/annotation>  
