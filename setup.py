@@ -12,7 +12,10 @@ setup(name='mapipe',
         'mapipe': [
             'configs/*',
         ]
-    }
+    },
+    install_requires=[
+        'HTSeq'
+    ]
     )
 
 setup(name='mumapipe',
