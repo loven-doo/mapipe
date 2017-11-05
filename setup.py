@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(name='mapipe',
-    version='0.4.1',
+    version='0.5.0',
     packages=['mapipe', 'mapipe.tools', 'mumapipe'],
     entry_points={
         'console_scripts': [

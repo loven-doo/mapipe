@@ -29,7 +29,7 @@ def download_reads(srr, srr_downloads_dir, config_path=DEFAULT_CONFIG, conf=None
     subprocess.call("mkdir " + srr_downloads_dir, shell=True)
     subprocess.call("mkdir " + os.path.join(srr_downloads_dir, srr), shell=True)
     subprocess.call(_prepare_paths(cmd.replace("//", "/")), shell=True)
-    subprocess.call("rm -r " + os.path.join(conf.get('fastq-dump', 'cash_dir'), '*'), shell=True)
+    subprocess.call("rm -r " + os.path.join(conf.get('fastq-dump', 'cash_dir'), srr+".sra.cashe"), shell=True)
 
 
 def filter_reads(reads_dir, config_path=DEFAULT_CONFIG, conf=None):
