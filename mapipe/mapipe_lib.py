@@ -47,7 +47,7 @@ def filter_reads(reads_dir, config_path=DEFAULT_CONFIG, conf=None):
             " ILLUMINACLIP: " + conf.get('Trimmomatic', 'ILLUMINACLIP') + " LEADING: " + \
             conf.get('Trimmomatic', 'LEADING') + " TRAILING: " + conf.get('Trimmomatic', 'TRAILING') + \
             " MINLEN: " + conf.get('Trimmomatic', 'MINLEN')
-    subprocess.call(_prepare_paths(cmd), shell=True)
+    subprocess.call(_prepare_paths(cmd).replace(": ", ":"), shell=True)
     for srr in srr_list:
         subprocess.call("rm " + srr, shell=True)
 
