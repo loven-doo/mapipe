@@ -37,16 +37,16 @@ def filter_reads(reads_dir, config_path=DEFAULT_CONFIG, conf=None):
     if len(srr_list) == 1:
         cmd = "java -jar " + conf.get('Trimmomatic', 'exec_path') + " SE -threads " + \
             conf.get('Trimmomatic', 'threads') + " -phred33 " + srr_list[0] + " " + \
-            srr_list[0].split(".")[0]+"_trimm.fastq" + " ILLUMINACLIP:" + conf.get('Trimmomatic', 'ILLUMINACLIP') + \
-            " LEADING:" + conf.get('Trimmomatic', 'LEADING') + " TRAILING:" + conf.get('Trimmomatic', 'TRAILING') + \
-            " MINLEN:" + conf.get('Trimmomatic', 'MINLEN')
+            srr_list[0].split(".")[0]+"_trimm.fastq" + " ILLUMINACLIP: " + conf.get('Trimmomatic', 'ILLUMINACLIP') + \
+            " LEADING: " + conf.get('Trimmomatic', 'LEADING') + " TRAILING: " + conf.get('Trimmomatic', 'TRAILING') + \
+            " MINLEN: " + conf.get('Trimmomatic', 'MINLEN')
     else:
         srr_list_trimm = _get_trimm_names(srr_list)
         cmd = "java -jar " + conf.get('Trimmomatic', 'exec_path') + " PE -threads " + \
             conf.get('Trimmomatic', 'threads') + " -phred33 " + " ".join(srr_list) + " " + " ".join(srr_list_trimm) + \
-            " ILLUMINACLIP:" + conf.get('Trimmomatic', 'ILLUMINACLIP') + " LEADING:" + \
-            conf.get('Trimmomatic', 'LEADING') + " TRAILING:" + conf.get('Trimmomatic', 'TRAILING') + \
-            " MINLEN:" + conf.get('Trimmomatic', 'MINLEN')
+            " ILLUMINACLIP: " + conf.get('Trimmomatic', 'ILLUMINACLIP') + " LEADING: " + \
+            conf.get('Trimmomatic', 'LEADING') + " TRAILING: " + conf.get('Trimmomatic', 'TRAILING') + \
+            " MINLEN: " + conf.get('Trimmomatic', 'MINLEN')
     subprocess.call(_prepare_paths(cmd), shell=True)
     for srr in srr_list:
         subprocess.call("rm " + srr, shell=True)
