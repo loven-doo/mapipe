@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(name='mapipe',
-    version='0.3.0',
+    version='0.3.1',
     packages=['mapipe', 'mapipe.tools', 'mumapipe'],
     entry_points={
         'console_scripts': [
@@ -18,13 +18,3 @@ setup(name='mapipe',
         'HTSeq'
     ]
     )
-
-#setup(name='mumapipe',
-#    version='0.3.0',
-#    packages=['mumapipe'],
-#    entry_points={
-#        'console_scripts': [
-#            'mumapipe = mumapipe.mumapipe_lib:main'
-#        ]
-#    },
-#    )
