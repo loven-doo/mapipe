@@ -1,30 +1,31 @@
 import sys
 import multiprocessing as mp
 
-from mapipe.tools._inner_tools import _config_parser, _parse_cmd_args
+from mapipe.tools._inner_tools import _config_parser, _parse_cmd_args, _define_gf_or_ind
 from mapipe import get_counts, index_genome
 from mapipe.constants import DEFAULT_CONFIG
 
 
-def run_mapipe(srr_list, srr_downloads_dir, genome_or_ind, gff, config_path=DEFAULT_CONFIG, threads=4, *args):
+def run_mapipe(srr_list, srr_downloads_dir, genome_fasta_or_indices, gff, config_path=DEFAULT_CONFIG, threads=4, *args):
     config = _config_parser(config_path)
+    genome_or_ind = _define_gf_or_ind(genome_fasta_or_indices)
     try:
-        genome_or_ind['genome_indices']
+        genome_indices = genome_or_ind['genome_indices']
     except KeyError:
         try:
-            g_ind = index_genome(genome=genome_or_ind['genome_fasta'], conf_path=config_path, conf=config)
-            genome_or_ind = {'genome_indices': g_ind}
+            genome_indices = index_genome(genome_fasta=genome_or_ind['genome_fasta'],
+                                          config_path=config_path, conf=config)
         except KeyError:
             print "No genome or genome indices file were in input"
             raise KeyError
     task_thr = max(int(config.get('Trimmomatic', 'threads')), int(config.get('STAR', 'threads')))
     args_list = []
-    srr_list_read = open(srr_list)
+    srr_list_read = _read_srr_list_file(srr_list)
     for srr in srr_list_read:
         args_dict = {
             'srr': srr,
             'srr_downloads_dir': srr_downloads_dir,
-            'genome_or_ind': genome_or_ind,
+            'genome_fasta_or_indices': genome_indices,
             'gff': gff,
             'config_path': config_path
         }
@@ -37,6 +38,27 @@ def run_mapipe(srr_list, srr_downloads_dir, genome_or_ind, gff, config_path=DEFA
     pool.close()
     pool.join()
 
+def _read_srr_list_file(f):
+    srr_list_r = []
+    read = open(f)
+    for lines in read:
+        line = None
+        line = lines.strip()
+        if len(line) == 0:
+            continue
+        line_list = line.lower().split("srr")
+        srr_list_r = srr_list_r + _new_line(line_list)
+    return srr_list_r
+
+def _new_line(l):
+    srr_l = []
+    for elms in l:
+        elm = None
+        elm = elms.strip(" .,;:/|_-\t\\")
+        if len(elm) == 0:
+            continue
+        srr_l.append("SRR"+elm)
+    return srr_l
 
 def _worker(kwargs):
     run_mapipe(**kwargs)

@@ -3,17 +3,19 @@ import subprocess
 import sys
 
 from mapipe.constants import DEFAULT_CONFIG
-from mapipe.tools._inner_tools import _parse_cmd_args, _config_parser, _prepare_paths, _get_files_list
+from mapipe.tools._inner_tools import _parse_cmd_args, _config_parser, _prepare_paths, _get_files_list, \
+    _define_gf_or_ind
 
 
-def get_counts(srr, srr_downloads_dir, genome_or_ind, gff, config_path=DEFAULT_CONFIG, *args):
+def get_counts(srr, srr_downloads_dir, genome_fasta_or_indices, gff, config_path=DEFAULT_CONFIG, *args):
     config = _config_parser(config_path)
     download_reads(srr=srr, srr_downloads_dir=srr_downloads_dir, config_path=config_path, conf=config)
     reads_directory = os.path.join(srr_downloads_dir, srr)
     print srr + " reads downloaded succsessfuly"
     filter_reads(reads_dir=reads_directory, config_path=config_path, conf=config)
     print srr + " reads filtered succesfully"
-    map_reads(reads_dir=reads_directory, genome_or_ind=genome_or_ind, config_path=config_path, conf=config)
+    map_reads(reads_dir=reads_directory, genome_fasta_or_indices=genome_fasta_or_indices,
+              config_path=config_path, conf=config)
     print srr + " reads mapped successfully"
     calculate_counts(gff=gff, reads_dir=reads_directory, config_path=config_path, conf=config)
     print "counts for " + srr + " reads got successfully"
@@ -60,14 +62,15 @@ def _get_trimm_names(srr_l):
     return srr_l_trimm
 
 
-def map_reads(reads_dir, genome_or_ind, config_path=DEFAULT_CONFIG, conf=None):
+def map_reads(reads_dir, genome_fasta_or_indices, config_path=DEFAULT_CONFIG, conf=None):
     if not conf:
         conf = _config_parser(config_path)
+    genome_or_ind = _define_gf_or_ind(genome_fasta_or_indices)
     try:
         g_ind = genome_or_ind['genome_indices']
     except KeyError:
         try:
-            g_ind = index_genome(genome=genome_or_ind['genome_fasta'], config_path=config_path,
+            g_ind = index_genome(genome_fasta=genome_or_ind['genome_fasta'], config_path=config_path,
                                  genome_indices="Genome_indices", conf=conf)
         except KeyError:
             print "No genome or genome indices file were in input"
@@ -95,8 +98,9 @@ def calculate_counts(gff, reads_dir, config_path=DEFAULT_CONFIG, conf=None):
     srr_list = _get_files_list(reads_dir)
     for srr in srr_list:
         if srr[-4:] == '.bam':
-            cmd = "python -m HTSeq.scripts.counts -f " + conf.get('HTSeq', 'format') + " -r " + conf.get('HTSeq', 'order') + \
-                  " -s " + conf.get('HTSeq', 'stranded') + srr + " " + gff + " 1 > " + srr[-4:] + ".ct 2 >> htseq.log"
+            cmd = "python -m HTSeq.scripts.counts -f " + conf.get('HTSeq', 'format') + " -r " + \
+                  conf.get('HTSeq', 'order') + " -s " + conf.get('HTSeq', 'stranded') + " " + srr + \
+                  " " + gff + " 1 > " + srr[:-4] + ".ct 2 >> htseq.log"
             subprocess.call(_prepare_paths(cmd), shell=True)
 
 

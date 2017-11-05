@@ -94,9 +94,9 @@ def _prepare_args(input_args, multi=None):
                     print "No genome or genome indices file were in input"
                     raise IOError
         else:
-            params_list.append({'genome_fasta': input_args.genome_fasta})
+            params_list.append(input_args.genome_fasta)
     else:
-        params_list.append({'genome_indices': input_args.genome_indices})
+        params_list.append(input_args.genome_indices)
     params_list.append(input_args.gff)
     if input_args.config_path:
         params_list.append(input_args.config_path)
@@ -137,3 +137,12 @@ def _get_files_list(files_d):
         if os.path.isfile(f_path):
             files_l.append(f_path)
     return files_l
+
+
+def _define_gf_or_ind(gf_or_ind):
+    if not gf_or_ind:
+        return {}
+    elif gf_or_ind[-6:] == ".fasta":
+        return {'genome_fasta': gf_or_ind}
+    else:
+        return {'genome_indices': gf_or_ind}
