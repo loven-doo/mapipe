@@ -61,7 +61,7 @@ def _new_line(l):
     return srr_l
 
 def _worker(kwargs):
-    run_mapipe(**kwargs)
+    get_counts(**kwargs)
 
 
 def main():
