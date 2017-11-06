@@ -104,8 +104,9 @@ def calculate_counts(gff, reads_dir, config_path=DEFAULT_CONFIG, conf=None):
     for srr in srr_list:
         if srr[-4:] == '.bam':
             cmd = "python -m HTSeq.scripts.count -f " + conf.get('HTSeq', 'format') + " -r " + \
-                  conf.get('HTSeq', 'order') + " -s " + conf.get('HTSeq', 'stranded') + " " + srr + \
-                  " " + gff + " 1> " + os.path.join(reads_dir, os.path.split(reads_dir)[1]) + ".ct 2>> htseq.log"
+                  conf.get('HTSeq', 'order') + " -s " + conf.get('HTSeq', 'stranded') + " -t " + \
+                  conf.get('HTSeq', 'type')+ " " + srr + " " + gff + " 1> " + \
+                  os.path.join(reads_dir, os.path.split(reads_dir)[1]) + ".ct 2>> htseq.log"
             subprocess.call(_prepare_paths(cmd), shell=True)
 
 
