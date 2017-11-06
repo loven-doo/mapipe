@@ -151,8 +151,8 @@ def _define_gf_or_ind(gf_or_ind):
 
 
 def _gff_to_gtf(gff, gffread_exec):
-    gff_ext = gff.split(".")
-    gtf = ".".join(gff_ext[:-1].append("gtf"))
+    gff_no_ext = gff.split(".")[:-1]
+    gtf = ".".join(gff_no_ext.append("gtf"))
     convert_cmd = gffread_exec + " " + gff + " -T -o " + gtf
     subprocess.call(_prepare_paths(convert_cmd), shell=True)
     return gtf
