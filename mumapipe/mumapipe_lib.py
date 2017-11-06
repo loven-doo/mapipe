@@ -20,7 +20,7 @@ def run_mapipe(srr_list, srr_downloads_dir, genome_fasta_or_indices, gff, config
             print "No genome or genome indices file were in input"
             raise KeyError
     if gff[-3:] != "gtf":
-        gtf = _gff_to_gtf(gff, config('HTSeq', 'gffread_exec'))
+        gtf = _gff_to_gtf(gff, config.get('HTSeq', 'gffread_exec'))
         gff = None
         gff = gtf
     task_thr = max(int(config.get('Trimmomatic', 'threads')), int(config.get('STAR', 'threads')))

@@ -97,7 +97,7 @@ def calculate_counts(gff, reads_dir, config_path=DEFAULT_CONFIG, conf=None):
     if not conf:
         conf = _config_parser(config_path)
     if gff[-3:] != "gtf":
-        gtf = _gff_to_gtf(gff, conf('HTSeq', 'gffread_exec'))
+        gtf = _gff_to_gtf(gff, conf.get('HTSeq', 'gffread_exec'))
         gff = None
         gff = gtf
     srr_list = _get_files_list(reads_dir)
