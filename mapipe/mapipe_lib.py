@@ -4,7 +4,7 @@ import sys
 
 from mapipe.constants import DEFAULT_CONFIG
 from mapipe.tools._inner_tools import _parse_cmd_args, _config_parser, _prepare_paths, _get_files_list, \
-    _define_gf_or_ind
+    _define_gf_or_ind, _gff_to_gtf
 
 
 def get_counts(srr, srr_downloads_dir, genome_fasta_or_indices, gff, config_path=DEFAULT_CONFIG, *args):
@@ -29,9 +29,10 @@ def download_reads(srr, srr_downloads_dir, config_path=DEFAULT_CONFIG, conf=None
     subprocess.call("mkdir " + srr_downloads_dir, shell=True)
     subprocess.call("mkdir " + os.path.join(srr_downloads_dir, srr), shell=True)
     subprocess.call(_prepare_paths(cmd.replace("//", "/")), shell=True)
-    subprocess.call("rm -r " + os.path.join(conf.get('fastq-dump', 'cash_dir'), srr+".sra.cashe"), shell=True)
+    subprocess.call("rm -r " + os.path.join(conf.get('fastq-dump', 'cache_dir'), srr+".sra.cache"), shell=True)
 
 
+#TODO: not only illumina support should be implemented till 2.0 version
 def filter_reads(reads_dir, config_path=DEFAULT_CONFIG, conf=None):
     if not conf:
         conf = _config_parser(config_path)
@@ -95,12 +96,16 @@ def index_genome(genome_fasta, config_path=DEFAULT_CONFIG, genome_indices="Genom
 def calculate_counts(gff, reads_dir, config_path=DEFAULT_CONFIG, conf=None):
     if not conf:
         conf = _config_parser(config_path)
+    if gff[-3:] != "gtf":
+        gtf = _gff_to_gtf(gff, conf('HTSeq', 'gffread_exec'))
+        gff = None
+        gff = gtf
     srr_list = _get_files_list(reads_dir)
     for srr in srr_list:
         if srr[-4:] == '.bam':
             cmd = "python -m HTSeq.scripts.count -f " + conf.get('HTSeq', 'format') + " -r " + \
                   conf.get('HTSeq', 'order') + " -s " + conf.get('HTSeq', 'stranded') + " " + srr + \
-                  " " + gff + " 1 > " + srr[:-4] + ".ct 2 >> htseq.log"
+                  " " + gff + " 1> " + os.path.join(reads_dir, os.path.split(reads_dir)[1]) + ".ct 2>> htseq.log"
             subprocess.call(_prepare_paths(cmd), shell=True)
 
 

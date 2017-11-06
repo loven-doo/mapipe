@@ -1,6 +1,7 @@
 import argparse
 import ConfigParser
 import os
+import subprocess
 
 from mapipe.constants import DEFAULT_CONFIG
 
@@ -139,6 +140,7 @@ def _get_files_list(files_d):
     return files_l
 
 
+#TODO: should be upgraded during 1.X versions
 def _define_gf_or_ind(gf_or_ind):
     if not gf_or_ind:
         return {}
@@ -146,3 +148,11 @@ def _define_gf_or_ind(gf_or_ind):
         return {'genome_fasta': gf_or_ind}
     else:
         return {'genome_indices': gf_or_ind}
+
+
+def _gff_to_gtf(gff, gffread_exec):
+    gff_ext = gff.split(".")
+    gtf = ".".join(gff_ext[:-1].append("gtf"))
+    convert_cmd = gffread_exec + " " + gff + " -T -o " + gtf
+    subprocess.call(_prepare_paths(convert_cmd), shell=True)
+    return gtf
