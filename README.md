@@ -12,7 +12,6 @@ It consists of four steps:
 - Trimmomatic
 - STAR
 - HTSeq
-- gffread
 
 
 ### How to use

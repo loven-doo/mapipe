@@ -1,10 +1,11 @@
 import os
 import subprocess
 import sys
+import logging
 
 from mapipe.constants import DEFAULT_CONFIG
 from mapipe.tools._inner_tools import _parse_cmd_args, _config_parser, _prepare_paths, _get_files_list, \
-    _define_gf_or_ind, _gff_to_gtf
+    _define_gf_or_ind
 
 
 def get_counts(srr, srr_downloads_dir, genome_fasta_or_indices, gff, config_path=DEFAULT_CONFIG, *args):
@@ -96,18 +97,68 @@ def index_genome(genome_fasta, config_path=DEFAULT_CONFIG, genome_indices="Genom
 def calculate_counts(gff, reads_dir, config_path=DEFAULT_CONFIG, conf=None):
     if not conf:
         conf = _config_parser(config_path)
-    if gff[-3:] != "gtf":
-        gtf = _gff_to_gtf(gff, conf.get('HTSeq', 'gffread_exec'))
-        gff = None
-        gff = gtf
+    #gtf = annotation_to_ensemble_gtf(gff, config_path=config_path, conf=conf)
+    #gff = None
+    #gff = gtf
     srr_list = _get_files_list(reads_dir)
     for srr in srr_list:
         if srr[-4:] == '.bam':
             cmd = "python -m HTSeq.scripts.count -f " + conf.get('HTSeq', 'format') + " -r " + \
                   conf.get('HTSeq', 'order') + " -s " + conf.get('HTSeq', 'stranded') + " -t " + \
-                  conf.get('HTSeq', 'type')+ " " + srr + " " + gff + " 1> " + \
-                  os.path.join(reads_dir, os.path.split(reads_dir)[1]) + ".csv 2>> htseq.log"
+                  conf.get('HTSeq', 'type') + " -i " + conf.get('HTSeq', 'idattr') + " " + srr + \
+                  " " + gff + " 1> " + os.path.join(reads_dir, os.path.split(reads_dir)[1]) + ".csv 2>> htseq.log"
             subprocess.call(_prepare_paths(cmd), shell=True)
+
+
+def annotation_to_ensemble_gtf(gff, config_path=DEFAULT_CONFIG, conf=None):
+    to_gtf_conv = False
+    to_ensemble_conv = False
+    if not conf:
+        conf = _config_parser(config_path)
+    if gff[-3:] != "gtf":
+        gtf = gff_to_gtf(gff, config_path=config_path, conf=conf)
+        gff = None
+        gff = gtf
+        to_gtf_conv = True
+    gtf, to_ensemble_conv = _check_gtf(gff)
+    gff = None
+    gff = gtf
+    if to_gtf_conv or to_ensemble_conv:
+        logging.info("Convertion to ensemble fromate is done")
+    else:
+        logging.info("Your file is just in ensemble gtf format")
+    return gff
+
+#TODO: Write this method properly during 1.x versions
+def _check_gtf(gtf):
+    conv = False
+    gtf_read = open(gtf)
+    for lines in gtf:
+        line = None
+        line = lines.strip()
+        if len(line) == 0:
+            continue
+        if line[0] == "#":
+            continue
+
+    if not conv:  #
+        conv = True
+    if conv:
+        new_gtf = _annot_to_ensemble(gtf)  #will be implemented during next versions
+        gtf = None
+        gtf = new_gtf
+    return gtf, conv
+
+
+def gff_to_gtf(gff, config_path=DEFAULT_CONFIG, conf=None):
+    if not conf:
+        conf = _config_parser(config_path)
+    gff_no_ext = gff.split(".")[:-1]
+    gff_no_ext.append("gtf")
+    gtf = ".".join(gff_no_ext)
+    convert_cmd = conf.get('HTSeq', 'gffread_exec') + " " + gff + " -T -o " + gtf
+    subprocess.call(_prepare_paths(convert_cmd), shell=True)
+    return gtf
 
 
 def main():
