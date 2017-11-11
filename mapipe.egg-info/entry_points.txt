@@ -1,4 +1,0 @@
-[console_scripts]
-mapipe = mapipe.mapipe_lib:main
-mumapipe = mumapipe.mumapipe_lib:main
-
