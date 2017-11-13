@@ -72,7 +72,7 @@ def map_reads(reads_dir, genome_fasta_or_indices, gff, config_path=DEFAULT_CONFI
         g_ind = genome_or_ind['genome_indices']
     except KeyError:
         try:
-            g_ind = index_genome(genome_fasta=genome_or_ind['genome_fasta'], config_path=config_path,
+            g_ind = index_genome(genome_fasta=genome_or_ind['genome_fasta'], gff=gff, config_path=config_path, 
                                  genome_indices="Genome_indices", conf=conf)
         except KeyError:
             print "No genome or genome indices file were in input"
