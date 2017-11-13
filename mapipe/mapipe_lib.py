@@ -70,23 +70,32 @@ def map_reads(reads_dir, genome_fasta_or_indices, gff, config_path=DEFAULT_CONFI
     genome_or_ind = _define_gf_or_ind(genome_fasta_or_indices)
     try:
         g_ind = genome_or_ind['genome_indices']
+        if _check_sjdb(g_ind):
+            gff = None
     except KeyError:
         try:
             g_ind = index_genome(genome_fasta=genome_or_ind['genome_fasta'], gff=gff, config_path=config_path, 
                                  genome_indices="Genome_indices", conf=conf)
+            gff = None
         except KeyError:
             print "No genome or genome indices file were in input"
             raise KeyError
     reads_f_list = _get_files_list(reads_dir)
-    if gff[-5:] != ".gff3":
-        parent_option = " --sjdbGTFtagExonParentTranscript Parent"
+    if not gff:
+        sjdb_option = ""
+    elif gff[-5:] != ".gff3":
+        sjdb_option = " --sjdbGTFfile " + gff + " --sjdbGTFtagExonParentTranscript Parent"
     else:
-        parent_option = ""
+        sjdb_option = " --sjdbGTFfile " + gff
     cmd = conf.get('STAR', 'exec_path') + " --runThreadN " + conf.get('STAR', 'threads') + " --genomeDir " + \
-        g_ind + " --sjdbGTFfile " + gff + parent_option + " --readFilesIn " + ",".join(reads_f_list) + \
+        g_ind + sjdb_option + " --readFilesIn " + ",".join(reads_f_list) + \
         " --outFileNamePrefix " + os.path.join(reads_dir, "") + " --quantMode GeneCounts --outSAMtype " + \
         conf.get('STAR', 'outSAMtype')
     subprocess.call(_prepare_paths(cmd), shell=True)
+
+
+def _check_sjdb(g_ind):
+    
 
 
 def index_genome(genome_fasta, gff=None, config_path=DEFAULT_CONFIG, genome_indices="Genome_indices", conf=None):
