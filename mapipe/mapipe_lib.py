@@ -95,8 +95,10 @@ def map_reads(reads_dir, genome_fasta_or_indices, gff, config_path=DEFAULT_CONFI
 
 
 def _check_sjdb(g_ind):
-    
-
+    ind_fs_list = _get_files_list(g_ind)
+    for f in ind_fs_list:
+        os.path.split()
+        
 
 def index_genome(genome_fasta, gff=None, config_path=DEFAULT_CONFIG, genome_indices="Genome_indices", conf=None):
     if not conf:
