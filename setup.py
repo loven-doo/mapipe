@@ -13,8 +13,8 @@ setup(name='mapipe',
         'mapipe': [
             'configs/*',
         ]
-    },
-    install_requires=[
-        'HTSeq'
-    ]
+    }
+#    install_requires=[
+#        'HTSeq'
+#    ]
     )
