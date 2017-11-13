@@ -89,12 +89,19 @@ def map_reads(reads_dir, genome_fasta_or_indices, gff, config_path=DEFAULT_CONFI
     subprocess.call(_prepare_paths(cmd), shell=True)
 
 
-def index_genome(genome_fasta, config_path=DEFAULT_CONFIG, genome_indices="Genome_indices", conf=None):
+def index_genome(genome_fasta, gff=None, config_path=DEFAULT_CONFIG, genome_indices="Genome_indices", conf=None):
     if not conf:
         conf = _config_parser(config_path)
+    if not gff:
+        sjdb_option = ""
+    elif gff[-5:] == ".gff3":
+        sjdb_option = " --sjdbGTFfile " + gff + " --sjdbGTFtagExonParentTranscript Parent"
+    else:
+        sjdb_option = " --sjdbGTFfile " + gff
     subprocess.call("mkdir " + genome_indices, shell=True)
     ind_cmd = conf.get('STAR', 'exec_path') + " --runThreadN " + conf.get('STAR', 'threads') + \
-              " --runMode genomeGenerate --genomeDir " + genome_indices + " --genomeFastaFiles " + genome_fasta
+              " --runMode genomeGenerate --genomeDir " + genome_indices + " --genomeFastaFiles " + \
+              genome_fasta + sjdb_option 
     subprocess.call(_prepare_paths(ind_cmd), shell=True)
     return genome_indices
 
