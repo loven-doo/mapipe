@@ -5,7 +5,7 @@ import logging
 
 from mapipe.constants import DEFAULT_CONFIG
 from mapipe.tools._inner_tools import _parse_cmd_args, _config_parser, _prepare_paths, _get_files_list, \
-    _define_gf_or_ind
+    _define_gf_or_ind, _check_sjdb
 
 
 def get_counts(srr, srr_downloads_dir, genome_fasta_or_indices, gff, config_path=DEFAULT_CONFIG, *args):
@@ -15,6 +15,8 @@ def get_counts(srr, srr_downloads_dir, genome_fasta_or_indices, gff, config_path
     print srr + " reads downloaded succsessfuly"
     filter_reads(reads_dir=reads_directory, config_path=config_path, conf=config)
     print srr + " reads filtered succesfully"
+    if _check_sjdb(genome_fasta_or_indices):
+        gff = None
     map_reads(reads_dir=reads_directory, genome_fasta_or_indices=genome_fasta_or_indices,
               config_path=config_path, conf=config)
     print srr + " reads mapped successfully"
@@ -70,8 +72,6 @@ def map_reads(reads_dir, genome_fasta_or_indices, gff, config_path=DEFAULT_CONFI
     genome_or_ind = _define_gf_or_ind(genome_fasta_or_indices)
     try:
         g_ind = genome_or_ind['genome_indices']
-        if _check_sjdb(g_ind):
-            gff = None
     except KeyError:
         try:
             g_ind = index_genome(genome_fasta=genome_or_ind['genome_fasta'], gff=gff, config_path=config_path, 
@@ -92,12 +92,6 @@ def map_reads(reads_dir, genome_fasta_or_indices, gff, config_path=DEFAULT_CONFI
         " --outFileNamePrefix " + os.path.join(reads_dir, "") + " --quantMode GeneCounts --outSAMtype " + \
         conf.get('STAR', 'outSAMtype')
     subprocess.call(_prepare_paths(cmd), shell=True)
-
-
-def _check_sjdb(g_ind):
-    ind_fs_list = _get_files_list(g_ind)
-    for f in ind_fs_list:
-        os.path.split()
         
 
 def index_genome(genome_fasta, gff=None, config_path=DEFAULT_CONFIG, genome_indices="Genome_indices", conf=None):
