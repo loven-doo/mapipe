@@ -87,7 +87,7 @@ def _prepare_args(input_args, multi=None):
         if not input_args.genome_fasta:
             print "No genome or genome indices file were in input"
             ind = raw_input("Enter path to the directory with indices for genome (if you \
-                        have only genome fasta file miss it): ")
+                       have only genome fasta file miss it): ")
             if not ind:
                 g = raw_input("Enter path to the fasta file with chromosomes sequences: ")
                 if not g:
