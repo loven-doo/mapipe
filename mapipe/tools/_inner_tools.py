@@ -139,6 +139,14 @@ def _get_files_list(files_d):
     return files_l
 
 
+def _check_sjdb(g_ind):
+    ind_fs_list = _get_files_list(g_ind)
+    for f in ind_fs_list:
+        if os.path.split()[1] == "sjdbInfo.txt":
+            return True
+    return False
+
+
 #TODO: should be upgraded during 1.X versions
 def _define_gf_or_ind(gf_or_ind):
     if not gf_or_ind:
