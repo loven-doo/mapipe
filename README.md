@@ -70,6 +70,4 @@ mapipe.map_reads(reads_dir, genome_fasta_or_indices, config_path) # runs STAR (i
 mapipe.index_genome(genome_fasta, config_path, genome_indices)
 # Indexes input fasta file with chromosomes, genome_indices = "Genome_indices" by default
 # so you can change destination folder name
-
-mapipe.calculate_counts(gff, reads_dir, config_path) # Calculates read counts using HTSeq
 ```
