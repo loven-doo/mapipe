@@ -3,9 +3,9 @@ import re
 import multiprocessing as mp
 
 from mapipe.tools._inner_tools import _config_parser, _parse_cmd_args, _define_gf_or_ind
-from mapipe.mapipe_lib import annotation_to_ensemble_gtf
 from mapipe import get_counts, index_genome
 from mapipe.constants import DEFAULT_CONFIG
+from mapipe.gff_tools import gff3_to_gtf
 
 
 def run_mapipe(srr_list, srr_downloads_dir, genome_fasta_or_indices, gff, config_path=DEFAULT_CONFIG, threads=4, *args):
@@ -20,9 +20,9 @@ def run_mapipe(srr_list, srr_downloads_dir, genome_fasta_or_indices, gff, config
         except KeyError:
             print "No genome or genome indices file were in input"
             raise KeyError
-    #gtf = annotation_to_ensemble_gtf(gff, config_path=config_path, conf=config)
-    #gff = None
-    #gff = gtf
+    gtf = gff3_to_gtf(gff)
+    gff = None
+    gff = gtf
     task_thr = max(int(config.get('Trimmomatic', 'threads')), int(config.get('STAR', 'threads')))
     args_list = []
     srr_list_read = _read_srr_list_file(srr_list)
