@@ -3,15 +3,14 @@
 It consists of four steps:
 1. Downloading reads from ncbi SRA database by SRR id using fastq-dump program
 2. Filtering reads using Trimmomatic program
-3. Mapping procedure conducted with STAR
-4. Get genes counts using HTSeq library (gff is not strong file format, so there may be problems with reading different gff files)
+3. Mapping procedure and getting genes counts conducted with STAR  
+Warning: gff is not strong file format, so there may be problems with reading different gff files
 
 ### Requirements:
 - Python 2.7
 - fastq-dump
 - Trimmomatic
 - STAR
-- HTSeq
 
 
 ### How to use
