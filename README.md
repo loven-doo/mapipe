@@ -3,15 +3,14 @@
 It consists of four steps:
 1. Downloading reads from ncbi SRA database by SRR id using fastq-dump program
 2. Filtering reads using Trimmomatic program
-3. Mapping procedure conducted with STAR
-4. Get genes counts using HTSeq library (gff is not strong file format, so there may be problems with reading different gff files)
+3. Mapping procedure and getting genes counts conducted with STAR  
+Warning: gff is not strong file format, so there may be problems with reading different gff files
 
 ### Requirements:
 - Python 2.7
 - fastq-dump
 - Trimmomatic
 - STAR
-- HTSeq
 
 
 ### How to use
@@ -71,6 +70,4 @@ mapipe.map_reads(reads_dir, genome_fasta_or_indices, config_path) # runs STAR (i
 mapipe.index_genome(genome_fasta, config_path, genome_indices)
 # Indexes input fasta file with chromosomes, genome_indices = "Genome_indices" by default
 # so you can change destination folder name
-
-mapipe.calculate_counts(gff, reads_dir, config_path) # Calculates read counts using HTSeq
 ```
