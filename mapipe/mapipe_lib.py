@@ -100,7 +100,8 @@ def index_genome(genome_fasta, gff=None, config_path=DEFAULT_CONFIG, genome_indi
     if not gff:
         sjdb_option = ""
     elif gff[-5:] == ".gff3":
-        sjdb_option = " --sjdbGTFfile " + gff + " --sjdbGTFtagExonParentTranscript Parent"
+        gtf = gff3_to_gtf(gff)
+        sjdb_option = " --sjdbGTFfile " + gtf
     else:
         sjdb_option = " --sjdbGTFfile " + gff
     subprocess.call("mkdir " + genome_indices, shell=True)
