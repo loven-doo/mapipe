@@ -82,7 +82,7 @@ def map_reads(reads_dir, genome_fasta_or_indices, gff, config_path=DEFAULT_CONFI
     reads_f_list = _get_files_list(reads_dir)
     if not gff:
         sjdb_option = ""
-    elif gff[-5:] != ".gff3":
+    elif gff[-5:] == ".gff3":
         gtf = gff3_to_gtf(gff)
         sjdb_option = " --sjdbGTFfile " + gtf
     else:
