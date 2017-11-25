@@ -86,4 +86,6 @@ mapipe.index_genome(genome_fasta, gff, config_path, genome_indices)
 # Indexes input fasta file with chromosomes, genome_indices = "Genome_indices" by default
 # so you can change destination folder name  
 # If you do not want include gff file into genome indices use gff = None
-```
+```  
+
+If you have any questions or suggestions use this adress to contact: loven-doo@fbb.msu.ru
