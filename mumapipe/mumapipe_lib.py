@@ -11,18 +11,19 @@ from mapipe.gff_tools import gff3_to_gtf
 def run_mapipe(srr_list, srr_downloads_dir, genome_fasta_or_indices, gff, config_path=DEFAULT_CONFIG, threads=4, *args):
     config = _config_parser(config_path)
     genome_or_ind = _define_gf_or_ind(genome_fasta_or_indices)
+    if gff[-5:] == ".gff3":
+        gtf = gff3_to_gtf(gff)
+        gff = None
+        gff = gtf
     try:
         genome_indices = genome_or_ind['genome_indices']
     except KeyError:
         try:
-            genome_indices = index_genome(genome_fasta=genome_or_ind['genome_fasta'],
+            genome_indices = index_genome(genome_fasta=genome_or_ind['genome_fasta'], gff=gff,  
                                           config_path=config_path, conf=config)
         except KeyError:
             print "No genome or genome indices file were in input"
             raise KeyError
-    gtf = gff3_to_gtf(gff)
-    gff = None
-    gff = gtf
     task_thr = max(int(config.get('Trimmomatic', 'threads')), int(config.get('STAR', 'threads')))
     args_list = []
     srr_list_read = _read_srr_list_file(srr_list)
