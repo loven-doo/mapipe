@@ -142,7 +142,7 @@ def _get_files_list(files_d):
 def _check_sjdb(g_ind):
     ind_fs_list = _get_files_list(g_ind)
     for f in ind_fs_list:
-        if os.path.split()[1] == "sjdbInfo.txt":
+        if os.path.split(f)[1] == "sjdbInfo.txt":
             return True
     return False
 
