@@ -18,7 +18,7 @@ def get_counts(srr, srr_downloads_dir, genome_fasta_or_indices, gff, config_path
     logging.info(srr + " reads filtered succesfully")
     if _check_sjdb(genome_fasta_or_indices):
         gff = None
-    map_reads(reads_dir=reads_directory, genome_fasta_or_indices=genome_fasta_or_indices,
+    map_reads(reads_dir=reads_directory, genome_fasta_or_indices=genome_fasta_or_indices, gff=gff, 
               config_path=config_path, conf=config)
     logging.info(srr + " reads mapped successfully")
 
@@ -65,7 +65,7 @@ def _get_trimm_names(srr_l):
     return srr_l_trimm
 
 
-def map_reads(reads_dir, genome_fasta_or_indices, gff, config_path=DEFAULT_CONFIG, conf=None):
+def map_reads(reads_dir, genome_fasta_or_indices, gff=None, config_path=DEFAULT_CONFIG, conf=None):
     if not conf:
         conf = _config_parser(config_path)
     genome_or_ind = _define_gf_or_ind(genome_fasta_or_indices)
