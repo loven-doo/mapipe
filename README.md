@@ -80,13 +80,13 @@ reads_dir = os.path.join(srr_downloads_dir, srr) # joins the path to fastq files
 mapipe.filter_reads(reads_dir, config_path) # filters reads using Trimmomatic
 
 mapipe.map_reads(reads_dir, genome_fasta_or_indices, gff, config_path) # runs STAR (it can automatically index input genome)  
-# If you included gff file into genome indices you can use gff = None  
-# If you do not want to calculate gene counts for input reads add calc_counts = False
+# If you included gff file into genome indices you can use gff=None  
+# If you do not want to calculate gene counts for input reads add calc_counts=False to the map_reads function call
 
 mapipe.index_genome(genome_fasta, gff, config_path, genome_indices)
-# Indexes input fasta file with chromosomes, genome_indices = "Genome_indices" by default
+# Indexes input fasta file with chromosomes, genome_indices="Genome_indices" by default
 # so you can change destination folder name  
-# If you do not want include gff file into genome indices use gff = None
+# If you do not want include gff file into genome indices use gff=None
 ```  
 
 If you have any questions or suggestions use this adress to contact: loven-doo@fbb.msu.ru
