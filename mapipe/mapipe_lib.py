@@ -65,7 +65,7 @@ def _get_trimm_names(srr_l):
     return srr_l_trimm
 
 
-def map_reads(reads_dir, genome_fasta_or_indices, gff=None, config_path=DEFAULT_CONFIG, conf=None):
+def map_reads(reads_dir, genome_fasta_or_indices, gff=None, config_path=DEFAULT_CONFIG, conf=None, calc_counts=True):
     if not conf:
         conf = _config_parser(config_path)
     genome_or_ind = _define_gf_or_ind(genome_fasta_or_indices)
@@ -80,17 +80,23 @@ def map_reads(reads_dir, genome_fasta_or_indices, gff=None, config_path=DEFAULT_
             print "No genome or genome indices file were in input"
             raise KeyError
     reads_f_list = _get_files_list(reads_dir)
-    if not gff:
-        sjdb_option = ""
-    elif gff[-5:] == ".gff3":
-        gtf = gff3_to_gtf(gff)
-        sjdb_option = " --sjdbGTFfile " + gtf
+    if calc_counts:
+        if not gff:
+            sjdb_option = ""
+        elif gff[-5:] == ".gff3":
+            gtf = gff3_to_gtf(gff)
+            sjdb_option = " --sjdbGTFfile " + gtf
+        else:
+            sjdb_option = " --sjdbGTFfile " + gff
+        cmd = conf.get('STAR', 'exec_path') + " --runThreadN " + conf.get('STAR', 'threads') + " --genomeDir " + \
+            g_ind + sjdb_option + " --readFilesIn " + ",".join(reads_f_list) + \
+            " --outFileNamePrefix " + os.path.join(reads_dir, "") + " --quantMode GeneCounts --outSAMtype " + \
+            conf.get('STAR', 'outSAMtype')
     else:
-        sjdb_option = " --sjdbGTFfile " + gff
-    cmd = conf.get('STAR', 'exec_path') + " --runThreadN " + conf.get('STAR', 'threads') + " --genomeDir " + \
-        g_ind + sjdb_option + " --readFilesIn " + ",".join(reads_f_list) + \
-        " --outFileNamePrefix " + os.path.join(reads_dir, "") + " --quantMode GeneCounts --outSAMtype " + \
-        conf.get('STAR', 'outSAMtype')
+        cmd = conf.get('STAR', 'exec_path') + " --runThreadN " + conf.get('STAR', 'threads') + " --genomeDir " + \
+            g_ind + " --readFilesIn " + ",".join(reads_f_list) + \
+            " --outFileNamePrefix " + os.path.join(reads_dir, "") + " --outSAMtype " + \
+            conf.get('STAR', 'outSAMtype')
     subprocess.call(_prepare_paths(cmd), shell=True)
         
 
