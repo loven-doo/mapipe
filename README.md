@@ -69,8 +69,7 @@ run_mapipe(srr_list, srr_downloads_dir, genome_fasta_or_indices, gff, config_pat
  
  gff3_to_gtf(gff, id_attrt='ID', parent_attr='Parent', gene_name_attr='gene', gtf=None)
  ```
-4. If you want conduct only one step
-Use import in python:  
+4. If you want conduct only one step use import in python:  
 ```
 import mapipe  
 
