@@ -17,7 +17,7 @@ Warning: gff is not strong file format, so there may be problems with reading di
 
 Install it:
 ```
-pip install git+https://github.com/loven-doo/mapipe.git
+pip install git+https://github.com/loven-doo/mapipe.git --upgrade  
 ```
 
 Have a look at mapipe/configs/config_example.ini to understand how to set fastq-dump,
